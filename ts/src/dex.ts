@@ -240,8 +240,8 @@ export class Dex {
       quoteMint: quoteCoin.mint,
       baseLotSize: new BN(baseLotSize),
       quoteLotSize: new BN(quoteLotSize),
-      feeRateBps: 150, // Unused in v3
-      quoteDustThreshold: new BN(500), // Unused in v3
+      feeRateBps: 0, // Unused in v3
+      quoteDustThreshold: new BN(100), // Unused in v3
       vaultSignerNonce: vaultOwnerNonce,
       programId: this.address,
     });
@@ -256,6 +256,8 @@ export class Dex {
       marketAccounts.bids,
       marketAccounts.asks,
     ]);
+
+    console.log("Transaction signature for market creation:", txSig);
 
     await this.connection.confirmTransaction(txSig, "confirmed");
 

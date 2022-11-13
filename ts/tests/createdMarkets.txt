@@ -1,0 +1,4 @@
+# CMPN/USDC
+Market Address: 8EapfK6wCoRy5sFXZX9gudi8j3m5nLZcuDgxDGWVLgSd
+Serum Program Address: srmqPvymJeFKQ4zGQed1GFppgkRHL9kaELCbyksJtPX (Community Serum)
+Final Transaction: 3PNMas3F8WkQsPdqk7PHxC1uMbYkkZYRwiM4b51a7qoVYzmsf8u1nsWgmLmYnwYHwRt8QsUeMtSWFpc7GhPVZAfa

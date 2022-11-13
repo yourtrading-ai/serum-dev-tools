@@ -1,10 +1,14 @@
 import { Connection, LAMPORTS_PER_SOL, PublicKey } from "@solana/web3.js";
 import { assert } from "chai";
 import { Coin, Dex, DexMarket, FileKeypair } from "../src";
+import bs58 from "bs58";
 
 describe("Serum Dev Tools", () => {
   const connection = new Connection("http://localhost:8899", "confirmed");
   const owner = FileKeypair.generate("./tests/keys/owner.json");
+
+  console.log("owner publicKey", owner.keypair.publicKey.toBase58());
+  console.log("owner secretKey", bs58.encode(owner.keypair.secretKey));
 
   const dexAddress = new PublicKey(
     "7zo7HCQAZPRb4pYiQQ6fLjC8ssN3E8LkavVs8JUA5NMn",

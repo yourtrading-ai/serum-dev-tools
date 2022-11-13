@@ -18,7 +18,7 @@ export class Coin {
 
   private _mint: PublicKey;
 
-  private _mintAuthority: Keypair;
+  private _mintAuthority: Keypair | null;
 
   private _freezeAuthority: Keypair | null;
 
@@ -26,7 +26,7 @@ export class Coin {
     symbol: string,
     decimals: number,
     mint: PublicKey,
-    mintAuthority: Keypair,
+    mintAuthority: Keypair | null,
     freezeAuthority: Keypair | null,
   ) {
     this._symbol = symbol;
@@ -70,7 +70,7 @@ export class Coin {
     connection: Connection,
     symbol: string,
     mint: PublicKey,
-    mintAuthority: Keypair,
+    mintAuthority: Keypair | null,
     freezeAuthority: Keypair | null,
   ): Promise<Coin> {
     const {
@@ -78,16 +78,19 @@ export class Coin {
       mintAuthority: tokenMintAuthority,
       freezeAuthority: tokenFreezeAuthority,
     } = await getMint(connection, mint, "confirmed");
-
     // tokenMintAuthority has to be truthy since createMint requires a mint authority as well.
     if (
-      !tokenMintAuthority ||
-      tokenMintAuthority.toBase58() !== mintAuthority.publicKey.toBase58()
+      !!tokenMintAuthority &&
+      !!mintAuthority &&
+      tokenMintAuthority.toBase58() !== mintAuthority?.publicKey.toBase58()
     ) {
-      throw new Error("Invalid Mint authority provided");
+      throw new Error(`Invalid Mint authority provided: ${!!mintAuthority}`);
     }
 
-    if (!!tokenFreezeAuthority !== !!freezeAuthority) {
+    if (
+      !!tokenFreezeAuthority &&
+      !!freezeAuthority &&
+      !!tokenFreezeAuthority !== !!freezeAuthority) {
       throw new Error("Invalid Freeze authority provided");
     }
 
@@ -112,6 +115,8 @@ export class Coin {
     const { mintAuthority, freezeAuthority } = to;
 
     if (
+      mintAuthority &&
+      this.mintAuthority &&
       mintAuthority.publicKey.toBase58() !==
       this.mintAuthority.publicKey.toBase58()
     ) {
@@ -178,6 +183,10 @@ export class Coin {
     owner: Keypair,
     connection: Connection,
   ): Promise<void> {
+    if (!this.mintAuthority) {
+      throw new Error("Cannot mint tokens without a mint authority");
+    }
+
     const destination = await getOrCreateAssociatedTokenAccount(
       connection,
       owner,
